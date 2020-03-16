@@ -25,7 +25,7 @@ bool Copter::ModeDrawStar::init(bool ignore_checks)
 
 void Copter:: ModeDrawStar::generate_path()
 {
-    float radius_cm=1000.0;
+    float radius_cm=g2.star_radius_cm;
     wp_nav->get_wp_stopping_point(path[0]);
     path[1]=path[0]+Vector3f(1.0f,0,0)*radius_cm;
     path[2]=path[0]+Vector3f(-cosf(radians(36.0f)),-sinf(radians(36.0f)),0)*radius_cm;
