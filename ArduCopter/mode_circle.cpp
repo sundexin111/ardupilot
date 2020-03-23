@@ -13,12 +13,15 @@ bool Copter::ModeCircle::init(bool ignore_checks)
         pilot_yaw_override = false;
 
         // initialize speeds and accelerations
-        pos_control->set_speed_xy(wp_nav->get_speed_xy());
+        //初始化速度和加速度
+        //pos_control是指针类对象，普通类对象的函数用.指针类对象用->
+        pos_control->set_speed_xy(wp_nav->get_speed_xy());//get_speed_xy()返回值是_wp_speed_cms
         pos_control->set_accel_xy(wp_nav->get_wp_acceleration());
         pos_control->set_speed_z(-get_pilot_speed_dn(), g.pilot_speed_up);
         pos_control->set_accel_z(g.pilot_accel_z);
 
         // initialise circle controller including setting the circle center based on vehicle speed
+        //设定圆的中心
         copter.circle_nav->init();
 
         return true;

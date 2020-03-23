@@ -116,6 +116,8 @@ enum control_mode_t {
     FLOWHOLD  =    22,  // FLOWHOLD holds position with optical flow without rangefinder
     FOLLOW    =    23,  // follow attempts to follow another vehicle or ground station
     DRAWSTAR  =    24,
+    REC       =    25,
+    SIXB      =    26,
 };
 
 enum mode_reason_t {

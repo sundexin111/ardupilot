@@ -34,6 +34,8 @@
 
 #define WPNAV_RANGEFINDER_FILT_Z         0.25f      // range finder distance filtered at 0.25hz
 
+//这个类的作用是路径规划
+//航点导航
 class AC_WPNav
 {
 public:

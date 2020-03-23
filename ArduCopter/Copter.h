@@ -974,6 +974,8 @@ private:
     ModeFollow mode_follow;
 #endif
     ModeDrawStar mode_DrawStar;
+    ModeRec mode_Rec;
+    ModeSixB mode_SixB;
 #if MODE_GUIDED_ENABLED == ENABLED
     ModeGuided mode_guided;
 #endif

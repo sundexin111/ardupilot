@@ -121,7 +121,7 @@ protected:
     ParametersG2 &g2;
     AC_WPNav *&wp_nav;
     AC_Loiter *&loiter_nav;
-    AC_PosControl *&pos_control;
+    AC_PosControl *&pos_control;// AC_PosControl 是类，pos_control是指针类对象
     AP_InertialNav &inertial_nav;
     AP_AHRS &ahrs;
     AC_AttitudeControl_t *&attitude_control;
@@ -845,6 +845,37 @@ public:
 
     bool requires_GPS() const override { return true; }
     bool has_manual_throttle() const override { return false; }
+    bool allows_arming(bool from_gcs) const override { return false; }//是否允许地面站解锁，我们是在仿真环境中解锁
+    bool is_autopilot() const override { return true; }//是否为自动控制，即自动模式，非手动模式
+    bool in_guided_mode() const { return true; }
+    bool has_user_takeoff(bool must_navigate) const override { return false; }//为什么不是用户起飞？不理解
+
+protected:
+
+    const char *name() const override { return "DRAWSTAR"; }
+    const char *name4() const override { return "DRAWSTAR"; }
+
+private:
+    Vector3f path[10];//将路径以航点形式存储起来，这里定义了10个航点，五角星只需5个航点，这里方便以后更改，加大了内存
+    int path_num;//当前航点
+
+    void generate_path();//这个函数是生成航点，即生成几个定点的坐标
+    void pos_control_start();
+    void pos_control_run();
+    void vel_control_run();
+};
+
+class ModeRec : public Mode {
+
+public:
+    // inherit constructor
+    using Copter::Mode::Mode;
+
+    bool init(bool ignore_checks) override;
+    void run() override;
+
+    bool requires_GPS() const override { return true; }
+    bool has_manual_throttle() const override { return false; }
     bool allows_arming(bool from_gcs) const override { return false; }
     bool is_autopilot() const override { return true; }
     bool in_guided_mode() const { return true; }
@@ -852,8 +883,8 @@ public:
 
 protected:
 
-    const char *name() const override { return "DRAWSTAR"; }
-    const char *name4() const override { return "DRAWSTAR"; }
+    const char *name() const override { return "REC"; }
+    const char *name4() const override { return "REC"; }
 
 private:
     Vector3f path[10];
@@ -865,6 +896,36 @@ private:
     void vel_control_run();
 };
 
+class ModeSixB : public Mode {
+
+public:
+    // inherit constructor
+    using Copter::Mode::Mode;
+
+    bool init(bool ignore_checks) override;
+    void run() override;
+
+    bool requires_GPS() const override { return true; }
+    bool has_manual_throttle() const override { return false; }
+    bool allows_arming(bool from_gcs) const override { return false; }
+    bool is_autopilot() const override { return true; }
+    bool in_guided_mode() const { return true; }
+    bool has_user_takeoff(bool must_navigate) const override { return false; }
+
+protected:
+
+    const char *name() const override { return "SIXB"; }
+    const char *name4() const override { return "SIXB"; }
+
+private:
+    Vector3f path[10];
+    int path_num;
+
+    void generate_path();
+    void pos_control_start();
+    void pos_control_run();
+    void vel_control_run();
+};
 
 class ModeGuidedNoGPS : public ModeGuided {
 

@@ -74,7 +74,8 @@ void AC_Circle::init(const Vector3f& center)
 void AC_Circle::init()
 {
     // initialise position controller (sets target roll angle, pitch angle and I terms based on vehicle current lean angles)
-    _pos_control.set_desired_accel_xy(0.0f,0.0f);
+    //初始化位置控制器
+    _pos_control.set_desired_accel_xy(0.0f,0.0f);//x y轴理想加速度
     _pos_control.set_desired_velocity_xy(0.0f,0.0f);
     _pos_control.init_xy_controller();
 
@@ -83,7 +84,7 @@ void AC_Circle::init()
     _pos_control.set_target_to_stopping_point_z();
 
     // get stopping point
-    const Vector3f& stopping_point = _pos_control.get_pos_target();
+    const Vector3f& stopping_point = _pos_control.get_pos_target();//停止点，返回位置控制目标
 
     // set circle center to circle_radius ahead of stopping point
     _center.x = stopping_point.x + _radius * _ahrs.cos_yaw();
@@ -94,6 +95,7 @@ void AC_Circle::init()
     calc_velocities(true);
 
     // set starting angle from vehicle heading
+    //从无人机器航向设置初始角度
     init_start_angle(true);
 }
 

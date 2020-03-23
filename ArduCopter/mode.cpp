@@ -157,7 +157,12 @@ Copter::Mode *Copter::mode_from_mode_num(const uint8_t mode)
         case DRAWSTAR:
             ret =&mode_DrawStar;
             break;
-
+        case REC:
+            ret=&mode_Rec;
+            break;
+        case SIXB:
+            ret=&mode_SixB;
+            break;
         default:
             break;
     }

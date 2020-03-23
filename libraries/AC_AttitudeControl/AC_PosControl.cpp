@@ -779,6 +779,7 @@ float AC_PosControl::get_lean_angle_max_cd() const
 void AC_PosControl::init_xy_controller()
 {
     // set roll, pitch lean angle targets to current attitude
+    //设置横滚、俯仰倾斜角度目标到当前姿态
     // todo: this should probably be based on the desired attitude not the current attitude
     _roll_target = _ahrs.roll_sensor;
     _pitch_target = _ahrs.pitch_sensor;
