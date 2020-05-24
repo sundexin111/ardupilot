@@ -161,12 +161,12 @@ void AP_Scheduler::run(uint32_t time_available)
         }
 
         // run it
-        _task_time_started = now;
+        _task_time_started = now;//任务开始的时间
         current_task = i;
         if (_debug > 1 && _perf_counters && _perf_counters[i]) {
             hal.util->perf_begin(_perf_counters[i]);
         }
-        _tasks[i].function();
+        _tasks[i].function();//跳转到对应函数
         if (_debug > 1 && _perf_counters && _perf_counters[i]) {
             hal.util->perf_end(_perf_counters[i]);
         }
@@ -177,8 +177,8 @@ void AP_Scheduler::run(uint32_t time_available)
         _last_run[i] = _tick_counter;
 
         // work out how long the event actually took
-        now = AP_HAL::micros();
-        uint32_t time_taken = now - _task_time_started;
+        now = AP_HAL::micros();//执行完任务的时间
+        uint32_t time_taken = now - _task_time_started;//执行任务花的时间
 
         if (time_taken > _task_time_allowed) {
             // the event overran!
@@ -192,7 +192,7 @@ void AP_Scheduler::run(uint32_t time_available)
             time_available = 0;
             break;
         }
-        time_available -= time_taken;
+        time_available -= time_taken;//剩余loop所用时间
     }
 
     // update number of spare microseconds

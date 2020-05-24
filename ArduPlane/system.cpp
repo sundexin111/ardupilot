@@ -20,6 +20,7 @@ static void failsafe_check_static()
 void Plane::init_ardupilot()
 {
     // initialise serial port
+    //初始化串行端口
     serial_manager.init_console();
 
     hal.console->printf("\n\nInit %s"
@@ -162,7 +163,7 @@ void Plane::init_ardupilot()
     gps.set_log_gps_bit(MASK_LOG_GPS);
     gps.init(serial_manager);
 
-    init_rc_in();               // sets up rc channels from radio
+    init_rc_in();               // sets up rc channels from radio通过无线电设置rc频道
 
 #if MOUNT == ENABLED
     // initialise camera mount
@@ -199,6 +200,7 @@ void Plane::init_ardupilot()
 
     // set the correct flight mode
     // ---------------------------
+    //复位控制通道
     reset_control_switch();
 
     // initialise sensor
