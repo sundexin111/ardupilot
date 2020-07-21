@@ -92,6 +92,24 @@ void Copter::Log_Write_Optflow()
  #endif     // OPTFLOW == ENABLED
 }
 
+struct PACKED log_OpenMV{
+    Log_PACKET_HEADER;
+    uint64_t time_us;
+    uint8_t cx;
+    uint8_t cy;
+};
+
+//write an OpenMV packet
+void Copter::Log_Write_OpenMV()
+{
+    struct log_OpenMV pkt = {
+            LOG_PACKET_HEADER_INIT(LOG_OPENMV_MSG),
+            time_us         : AP_HAL::micros64,
+            cx              : openmv.cx,
+            cy              : openmv.cy
+    };
+    DateFlash.WriteBlock(&pkt,sizeof(pkt));
+}
 struct PACKED log_Control_Tuning {
     LOG_PACKET_HEADER;
     uint64_t time_us;
@@ -497,6 +515,8 @@ const struct LogStructure Copter::log_structure[] = {
     { LOG_OPTFLOW_MSG, sizeof(log_Optflow),
       "OF",   "QBffff",   "TimeUS,Qual,flowX,flowY,bodyX,bodyY", "s-EEEE", "F-0000" },
 #endif
+    { LOG_OPENMV_MSG, sizeof(log_OpenMV),
+      "OMV",   "QBB",   "imeUS,cx,xy", "s--", "F--" },
     { LOG_CONTROL_TUNING_MSG, sizeof(log_Control_Tuning),
       "CTUN", "Qffffffefcfhh", "TimeUS,ThI,ABst,ThO,ThH,DAlt,Alt,BAlt,DSAlt,SAlt,TAlt,DCRt,CRt", "s----mmmmmmnn", "F----00B0BBBB" },
     { LOG_MOTBATT_MSG, sizeof(log_MotBatt),

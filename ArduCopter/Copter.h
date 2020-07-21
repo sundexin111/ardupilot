@@ -667,6 +667,7 @@ private:
     void rc_loop();
     void throttle_loop();
     void update_batt_compass(void);
+    void update_OpenMV(void);
     void fourhundred_hz_logging();
     void ten_hz_logging_loop();
     void twentyfive_hz_logging();
@@ -792,6 +793,7 @@ private:
 
     // Log.cpp
     void Log_Write_Optflow();
+    void Log_Write_OpenMV();
     void Log_Write_Control_Tuning();
     void Log_Write_Performance();
     void Log_Write_Attitude();

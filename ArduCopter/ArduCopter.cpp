@@ -129,6 +129,7 @@ const AP_Scheduler::Task Copter::scheduler_tasks[] = {
 #endif
     SCHED_TASK_CLASS(AP_Notify,            &copter.notify,              update,          50,  90),
     SCHED_TASK(one_hz_loop,            1,    100),
+    SCHED_TASK(update_OpenMV,        400,    100),
     SCHED_TASK(ekf_check,             10,     75),
     SCHED_TASK(gpsglitch_check,       10,     50),
     SCHED_TASK(landinggear_update,    10,     75),
@@ -309,6 +310,71 @@ void Copter::update_batt_compass(void)
         // log compass information
         if (should_log(MASK_LOG_COMPASS) && !ahrs.have_ekf_logging()) {
             DataFlash.Log_Write_Compass(compass);
+        }
+    }
+}
+
+void Copter::update_OpenMv(void)
+{
+    //simulation
+    bool sim_openmv_new_date = false;
+    static unit32_t last_sim_new_date_time_ms = 0;
+    if(control_mode != GUIDED)
+    {
+        last_sim_new_date_time_ms = millis();
+        openmv.cx = 80;
+        openmv.cy = 60;
+     //切入引导模式15s内
+    }else if (millis() - last_sim_new_date_time_ms <15000){
+        sim_openmv_new_date = true;
+        openmv.last_frame_ms = millis();
+        openmv.cx = 1;
+        openmv.cy = 1;
+    //15-30s
+    }else if (millis() - last_sim_new_date_time_ms <30000){
+        sim_openmv_new_date = true;
+        openmv.last_frame_ms = millis();
+        openMV.cx = 160;
+        opemMV.cy = 120;
+    }else{
+        sim_openmv_new_date = false;
+        openmv.cx = 80;
+        openmv.cx = 60;
+    }
+
+    //end of simulation code
+
+    static uint32_t last_set_pos_target_time_ms = 0;
+    Vector3f target = Vector3f(0,0,0);
+    if(openmv.update() || sim_openmv_new_date){
+        Log_Write_OpenMV();
+
+        if(control_mode != GUIDED)
+            return;
+
+        int16_t target_body_frame_y = (int16_t)openmv.cx - 80;
+        int16_t target_body_frame_z = (int16_t)openmv.cy - 60;
+
+        float angle_y_deg = target_body_frame_y * 60.0f/160.0f;
+        float angle_z_deg = target_body_frame_z * 60.0f/120.0f;
+
+        Vector3f v = Vector3f(1.0f,tanf(radians(angle_y_deg)),tanf(radians(angle_z_deg)));
+        v=v/v.length();
+
+        const Matrix3f &rotMat = copter.ahrs.get_rotation_body_to_ned();
+        v=rotMat * v;
+
+        //虚拟目标位置
+        target = v * 10000.0f;
+        target.z = -target.z; //ned to neu(北东高)
+
+        Vector3f current_pos = inertial_nav.get_position();
+        target = target + current_pos;
+
+        if(millis() - last_set_pos_target_time_ms > 500){ //call in 2Hz
+            //wp_nav->set_wp_destination(target,false);
+            mode_guided.set_destination(target,false,0,true,0,false);
+            last_set_pos_target_time_ms = millis();
         }
     }
 }

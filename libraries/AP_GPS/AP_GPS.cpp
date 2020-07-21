@@ -684,6 +684,7 @@ void AP_GPS::update_instance(uint8_t instance)
 void AP_GPS::update(void)
 {
     for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+        //对每个gps都运行一次
         update_instance(i);
     }
 
@@ -1140,6 +1141,7 @@ bool AP_GPS::get_lag(uint8_t instance, float &lag_sec) const
 }
 
 // return a 3D vector defining the offset of the GPS antenna in meters relative to the body frame origin
+//计算天线与飞控（飞机）中心的偏移值
 const Vector3f &AP_GPS::get_antenna_offset(uint8_t instance) const
 {
     if (instance == GPS_MAX_RECEIVERS) {

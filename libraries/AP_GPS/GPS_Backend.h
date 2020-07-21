@@ -33,6 +33,7 @@ public:
     // The read() method is the only one needed in each driver. It
     // should return true when the backend has successfully received a
     // valid packet from the GPS.
+    //ÓÃÀ´¶Á´®¿Ú
     virtual bool read() = 0;
 
     // Highest status supported by this GPS. 

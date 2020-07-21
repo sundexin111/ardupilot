@@ -21,7 +21,7 @@
 #include <AP_Math/AP_Math.h>
 #include <AP_Vehicle/AP_Vehicle.h>
 #include "GPS_detect_state.h"
-#include <AP_SerialManager/AP_SerialManager.h>
+#include <AP_SerialManager/AP_SerialManager.h>//必备
 #include <AP_RTC/AP_RTC.h>
 
 /**
@@ -99,9 +99,9 @@ public:
         NO_FIX = GPS_FIX_TYPE_NO_FIX,                     ///< Receiving valid GPS messages but no lock
         GPS_OK_FIX_2D = GPS_FIX_TYPE_2D_FIX,              ///< Receiving valid messages and 2D lock
         GPS_OK_FIX_3D = GPS_FIX_TYPE_3D_FIX,              ///< Receiving valid messages and 3D lock
-        GPS_OK_FIX_3D_DGPS = GPS_FIX_TYPE_DGPS,           ///< Receiving valid messages and 3D lock with differential improvements
+        GPS_OK_FIX_3D_DGPS = GPS_FIX_TYPE_DGPS,           ///< Receiving valid messages and 3D lock with differential improvements 差分
         GPS_OK_FIX_3D_RTK_FLOAT = GPS_FIX_TYPE_RTK_FLOAT, ///< Receiving valid messages and 3D RTK Float
-        GPS_OK_FIX_3D_RTK_FIXED = GPS_FIX_TYPE_RTK_FIXED, ///< Receiving valid messages and 3D RTK Fixed
+        GPS_OK_FIX_3D_RTK_FIXED = GPS_FIX_TYPE_RTK_FIXED, ///< Receiving valid messages and 3D RTK Fixed 真正的RTK状态
     };
 
     // GPS navigation engine settings. Not all GPS receivers support
@@ -126,6 +126,9 @@ public:
       The GPS_State structure is filled in by the backend driver as it
       parses each message from the GPS.
      */
+
+   //GPS驱动对上层的接口
+   //所有GPS定位到的信息都从这个结构体中往外传
     struct GPS_State {
         uint8_t instance; // the instance number of this GPS
 
@@ -133,13 +136,13 @@ public:
         GPS_Status status;                  ///< driver fix status
         uint32_t time_week_ms;              ///< GPS time (milliseconds from start of GPS week)
         uint16_t time_week;                 ///< GPS week number
-        Location location;                  ///< last fix location
-        float ground_speed;                 ///< ground speed in m/sec
-        float ground_course;                ///< ground course in degrees
-        uint16_t hdop;                      ///< horizontal dilution of precision in cm
-        uint16_t vdop;                      ///< vertical dilution of precision in cm
-        uint8_t num_sats;                   ///< Number of visible satellites
-        Vector3f velocity;                  ///< 3D velocity in m/s, in NED format
+        Location location;                  ///< last fix location                          经纬高位置
+        float ground_speed;                 ///< ground speed in m/sec                      gps只测地速
+        float ground_course;                ///< ground course in degrees                   地速的航向
+        uint16_t hdop;                      ///< horizontal dilution of precision in cm     水平精度因子，GPS自己估算出来的
+        uint16_t vdop;                      ///< vertical dilution of precision in cm       垂直精度因子
+        uint8_t num_sats;                   ///< Number of visible satellites               卫星数
+        Vector3f velocity;                  ///< 3D velocity in m/s, in NED format          三维速度
         float speed_accuracy;               ///< 3D velocity RMS accuracy estimate in m/s
         float horizontal_accuracy;          ///< horizontal RMS accuracy estimate in m
         float vertical_accuracy;            ///< vertical RMS accuracy estimate in m
@@ -150,6 +153,7 @@ public:
         uint32_t last_gps_time_ms;          ///< the system time we got the last GPS timestamp, milliseconds
 
         // all the following fields must only all be filled by RTK capable backend drivers
+        //rtk相关，不常用
         uint32_t rtk_time_week_ms;         ///< GPS Time of Week of last baseline in milliseconds
         uint16_t rtk_week_number;          ///< GPS Week Number of last baseline
         uint32_t rtk_age_ms;               ///< GPS age of last baseline correction in milliseconds  (0 when no corrections, 0xFFFFFFFF indicates overflow)
@@ -419,6 +423,7 @@ public:
 
 protected:
 
+    //类内部变量
     // configuration parameters
     AP_Int8 _type[GPS_MAX_RECEIVERS];
     AP_Int8 _navfilter;

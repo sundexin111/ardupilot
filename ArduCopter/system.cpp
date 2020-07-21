@@ -158,6 +158,10 @@ void Copter::init_ardupilot()
     gps.set_log_gps_bit(MASK_LOG_GPS);
     gps.init(serial_manager);
 
+    //所有外设要初始化
+    //输入是串口管理器
+    openmv.init(serial_manager);
+
     init_compass();
 
 #if OPTFLOW == ENABLED
